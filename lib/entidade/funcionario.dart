@@ -1,19 +1,14 @@
-class Funcionario {
-  DateTime dataDeEntrada;
+import 'package:artemis/entidade/departamento.dart';
 
-  Funcionario({required this.dataDeEntrada});
+class Funcionario {
+  final DateTime dataDeEntrada;
+  final Departamento departamento;
+
+  Funcionario({required this.dataDeEntrada, required this.departamento});
   
   bool podeSolicitarFerias() {
     var diferencaDias = DateTime.now().difference(this.dataDeEntrada);
     if(diferencaDias.inDays >= 365) {
-      return true;
-    }
-    return false;
-  }
-
-  bool solicitouComQuinzeDias(DateTime dataSolicitacao) {
-    var diferencaDias = DateTime.now().difference(dataSolicitacao);
-    if(diferencaDias.inDays >= 15){
       return true;
     }
     return false;
