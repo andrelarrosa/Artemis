@@ -12,4 +12,8 @@ class RegistroPonto {
     return horasExtras <= 12.0;
   }
 
+  bool validarHorasEstagiario(IRegistroPonto registroPonto) {
+    double horasExtras = registroPonto.buscarHorasExtras(this.funcionario);
+    return horasExtras <= 6.0;
+  }
 }

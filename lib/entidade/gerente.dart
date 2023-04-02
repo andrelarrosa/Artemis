@@ -4,12 +4,25 @@ import 'package:artemis/entidade/funcionario.dart';
 import 'package:artemis/entidade/posicao_trabalho.dart';
 
 class Gerente extends Funcionario {
-  Gerente({required super.dataDeEntrada, required super.departamento});
+  final DateTime dataUltimaBonificacao;
+  Gerente(
+      {required super.dataDeEntrada,
+      required super.departamento,
+      required this.dataUltimaBonificacao});
 
- PosicaoTrabalho criarNovaPosicao(PosicaoTrabalho novaPosicao) {
-  if(novaPosicao.departamento.nome != this.departamento.nome) {
-    throw Exception("Não foi possível criar uma nova posição!");
+  PosicaoTrabalho criarNovaPosicao(PosicaoTrabalho novaPosicao) {
+    if (novaPosicao.departamento.nome != this.departamento.nome) {
+      throw Exception("Não foi possível criar uma nova posição!");
+    }
+    return novaPosicao;
   }
-  return novaPosicao;
- }
+
+  bool temDireitoBonificacao(DateTime dataSolicitacao) {
+    dataSolicitacao = dataSolicitacao.toUtc();
+    if (dataUltimaBonificacao == null ||
+        dataSolicitacao.difference(dataUltimaBonificacao).inDays >= 183) {
+      return true;
+    }
+    return false;
+  }
 }
