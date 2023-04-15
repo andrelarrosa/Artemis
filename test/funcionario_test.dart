@@ -6,11 +6,10 @@ import 'package:artemis/entidade/estagiario.dart';
 import 'package:artemis/entidade/funcionario.dart';
 import 'package:artemis/entidade/gerente.dart';
 import 'package:artemis/entidade/interfaces/iregistro_ponto.dart';
-import 'package:artemis/entidade/plano_trabalho_empresa.dart';
 import 'package:artemis/entidade/posicao_trabalho.dart';
 import 'package:artemis/entidade/produto.dart';
 import 'package:artemis/entidade/registro_ponto.dart';
-import 'package:artemis/entidade/terceiro.dart';
+import 'package:artemis/entidade/terceirizado.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 // Regras:
@@ -122,43 +121,39 @@ void main() {
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
 
-    RegistroPonto registroPonto = RegistroPonto(funcionario: estagiario);
+    RegistroPonto registroPonto = RegistroPonto(estagiario: estagiario);
     expect(registroPonto.validarHorasEstagiario(rp), false);
   });
 
-  test("Terceirizado devem receber pelo serviço/produto", () {
-    Produto produto = Produto(
+  test("Terceirizados devem receber pelo serviço/produto", () {
+    ProdutoTerceirizado produto = ProdutoTerceirizado(
         nome: "SIS",
         dataInicio: DateTime.utc(2021, DateTime.april, 15),
         dataFinal: DateTime.utc(2022, DateTime.april, 15),
         finalizado: true,
         valorAcordado: 1200.0);
 
-    Terceiro terceiro = Terceiro(
+    Terceirizado terceiro = Terceirizado(
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "Desenvolvimento"),
         nome: "Larrosa Informática",
-        dataInicioProduto: DateTime.utc(2021, DateTime.april, 15),
-        dataFinalProduto: DateTime.utc(2022, DateTime.april, 15),
         produto: produto);
     expect(terceiro.receber(DateTime.utc(2022, DateTime.april, 15)),
         terceiro.produto.valorAcordado);
   });
 
   test("Terceirizado não podem solicitar férias", () {
-    Produto produto = Produto(
+    ProdutoTerceirizado produto = ProdutoTerceirizado(
         nome: "SIS",
         dataInicio: DateTime.utc(2021, DateTime.april, 15),
         dataFinal: DateTime.utc(2022, DateTime.april, 15),
         finalizado: true,
         valorAcordado: 1200.0);
 
-    Terceiro terceiro = Terceiro(
+    Terceirizado terceiro = Terceirizado(
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "Desenvolvimento"),
         nome: "Larrosa Informática",
-        dataInicioProduto: DateTime.utc(2021, DateTime.april, 15),
-        dataFinalProduto: DateTime.utc(2022, DateTime.april, 15),
         produto: produto);
     expect(terceiro.podeSolicitarFerias(), false);
   });
@@ -174,13 +169,12 @@ void main() {
 }
 
 class HorasExtrasCertas implements IRegistroPonto {
-  double buscarHorasExtras(Funcionario funcionario) {
+  double buscarHorasExtrasFuncionario(Funcionario? funcionario) {
     return 10.0;
   }
-}
 
-class HorasExtrasEstagiario implements IRegistroPonto {
-  double buscarHorasExtras(Funcionario funcionario) {
+  double buscarHorasExtrasEstagiario(Estagiario? estagiario) {
     return 7.0;
   }
+
 }

@@ -1,6 +1,8 @@
 import 'package:artemis/entidade/departamento.dart';
+import 'package:artemis/entidade/interfaces/ifuncionario.dart';
 
-class Funcionario {
+// Segue princípio de Uma responsabilidade(S), aberto/fechado (O)
+class Funcionario implements IFuncionario {
   final DateTime dataDeEntrada;
   final Departamento departamento;
 

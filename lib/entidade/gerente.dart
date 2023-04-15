@@ -3,6 +3,7 @@ import 'package:artemis/entidade/departamento.dart';
 import 'package:artemis/entidade/funcionario.dart';
 import 'package:artemis/entidade/posicao_trabalho.dart';
 
+// Liskov, Aberto/Fechado, responsabilidade única
 class Gerente extends Funcionario {
   final DateTime dataUltimaBonificacao;
   Gerente(

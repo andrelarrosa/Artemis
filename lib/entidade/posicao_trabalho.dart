@@ -1,6 +1,7 @@
 import 'package:artemis/entidade/departamento.dart';
 import 'package:artemis/entidade/funcionario.dart';
 
+// Responsabilidade Única
 class PosicaoTrabalho {
   final String nome;
   final List<Funcionario> funcionarios;

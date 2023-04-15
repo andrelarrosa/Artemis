@@ -1,20 +1,19 @@
 import 'package:artemis/entidade/funcionario.dart';
 import 'package:artemis/entidade/produto.dart';
 
-class Terceiro extends Funcionario {
+// herança
+class Terceirizado extends Funcionario {
+  //abstração
   final String nome;
-  final DateTime dataInicioProduto;
-  final DateTime dataFinalProduto;
-  final Produto produto;
+  final ProdutoTerceirizado produto;
 
-  Terceiro(
+  Terceirizado(
       {required super.dataDeEntrada,
       required super.departamento,
       required this.nome,
-      required this.dataInicioProduto,
-      required this.dataFinalProduto,
       required this.produto});
 
+  // Encapsulamento da lógica para determinar se um terceiro pode receber
   double receber(DateTime dataEntrega) {
     if (!produto.finalizado) {
       throw new Exception(
@@ -23,6 +22,7 @@ class Terceiro extends Funcionario {
     return produto.valorAcordado;
   }
 
+  // Polimorfismo (sobrescreve o método com o mesmo nome na classe pai, Funcionario)
   @override
   bool podeSolicitarFerias() {
     return false;

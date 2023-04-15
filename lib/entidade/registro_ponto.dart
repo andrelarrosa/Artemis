@@ -1,19 +1,22 @@
+import 'package:artemis/entidade/estagiario.dart';
 import 'package:artemis/entidade/funcionario.dart';
 import 'package:artemis/entidade/interfaces/iregistro_ponto.dart';
 
 class RegistroPonto {
-  // inversão de dependência
-  final Funcionario funcionario;
+  final Funcionario? funcionario;
+  final Estagiario? estagiario;
 
-  RegistroPonto({required this.funcionario});
+  RegistroPonto({this.funcionario, this.estagiario});
 
   bool validarHorasExtras(IRegistroPonto registroPonto) {
-    double horasExtras = registroPonto.buscarHorasExtras(this.funcionario);
+    // inversão de dependencia
+    double horasExtras = registroPonto.buscarHorasExtrasFuncionario(this.funcionario);
     return horasExtras <= 12.0;
   }
 
   bool validarHorasEstagiario(IRegistroPonto registroPonto) {
-    double horasExtras = registroPonto.buscarHorasExtras(this.funcionario);
+    // inversão de dependencia
+    double horasExtras = registroPonto.buscarHorasExtrasEstagiario(this.estagiario);
     return horasExtras <= 6.0;
   }
 }
