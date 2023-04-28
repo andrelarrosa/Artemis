@@ -14,23 +14,30 @@ class AgendamentoFerias {
 
   bool solicitouComQuinzeDias() {
     var diferencaDias = dataSaida.difference(dataSolicitacao);
-    // polimorfismo com funcionario e suas extensões
-    if (funcionario.podeSolicitarFerias() && diferencaDias.inDays >= 15) {
+    if (funcionarioPodeSolicitarFerias() && diferencaDias.inDays >= 15) {
       return true;
     }
     return false;
   }
 
-  bool aprovarSolicitacao(Gerente gerente, Funcionario funcionario) {
-    if (gerente.departamento.nome == funcionario.departamento.nome &&
+  bool aprovarSolicitacao(Gerente gerente) {
+    if (gerente.departamento.nome == this.funcionario.departamento.nome &&
         solicitouComQuinzeDias()) {
       return true;
     }
     return false;
   }
+   
+   bool funcionarioPodeSolicitarFerias() {
+    var diferencaDias = DateTime.now().difference(this.funcionario.dataDeEntrada);
+    if (diferencaDias.inDays >= 365) {
+      return true;
+    }
+    return false;
+  }
 
-  DateTime agendarFerias(Gerente gerente, Funcionario funcionario) {
-    if (!aprovarSolicitacao(gerente, funcionario)) {
+  DateTime agendarFerias(Gerente gerente) {
+    if (!aprovarSolicitacao(gerente)) {
       throw Exception(
           "Não foi possível agendar suas férias, por favor, verifique com o seu gerente");
     }

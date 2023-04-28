@@ -31,28 +31,46 @@ void main() {
     var funcionarioPodeSolicitar = Funcionario(
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
+    var agendamentoFeriasPodeSolicitar = AgendamentoFerias(
+        funcionario: funcionarioPodeSolicitar,
+        dataSolicitacao: DateTime.utc(2023, DateTime.march, 9),
+        dataSaida: DateTime.utc(2023, DateTime.march, 24));
+    expect(agendamentoFeriasPodeSolicitar.funcionarioPodeSolicitarFerias(), true);
+
     var funcionarioNaoPodeSolicitar = Funcionario(
         dataDeEntrada: DateTime.utc(2022, DateTime.october, 17),
-        departamento: Departamento(nome: "RH"));
-    expect(funcionarioPodeSolicitar.podeSolicitarFerias(), true);
-    expect(funcionarioNaoPodeSolicitar.podeSolicitarFerias(), false);
+        departamento: Departamento(nome: "RH"));    
+    var agendamentoFeriasNaoPodeSolicitar = AgendamentoFerias(
+        funcionario: funcionarioNaoPodeSolicitar,
+        dataSolicitacao: DateTime.utc(2023, DateTime.march, 9),
+        dataSaida: DateTime.utc(2023, DateTime.march, 24));
+    expect(agendamentoFeriasNaoPodeSolicitar.funcionarioPodeSolicitarFerias(), false);
   });
 
   test(
       "Os funcionários devem solicitar férias com uma antecedência mínima de 15 dias",
       () {
-    var funcionario = Funcionario(
+    var funcionarioSolicitouCerto = Funcionario(
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
-    var agendamentoFerias = AgendamentoFerias(
-        funcionario: funcionario,
+    var agendamentoFeriasSolicitouCerto = AgendamentoFerias(
+        funcionario: funcionarioSolicitouCerto,
         dataSolicitacao: DateTime.utc(2023, DateTime.march, 9),
         dataSaida: DateTime.utc(2023, DateTime.march, 24));
-    expect(agendamentoFerias.solicitouComQuinzeDias(), true);
+    expect(agendamentoFeriasSolicitouCerto.solicitouComQuinzeDias(), true);
+    
+     var funcionarioNaoSolicitouCerto = Funcionario(
+        dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
+        departamento: Departamento(nome: "RH"));
+    var agendamentoFeriasNaoSolicitouCerto = AgendamentoFerias(
+        funcionario: funcionarioNaoSolicitouCerto,
+        dataSolicitacao: DateTime.utc(2023, DateTime.march, 15),
+        dataSaida: DateTime.utc(2023, DateTime.march, 24));
+    expect(agendamentoFeriasNaoSolicitouCerto.solicitouComQuinzeDias(), false);
   });
 
   test(
-      "As suas solicitações de férias devem ser aprovadas pelos seus gerentes de departamento",
+      "As suas solicitações de férias devem ser aprovadas pelos seus gerentes de departamento (Certo)",
       () {
     var funcionario = Funcionario(
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
@@ -65,7 +83,40 @@ void main() {
         funcionario: funcionario,
         dataSolicitacao: DateTime.utc(2023, DateTime.march, 9),
         dataSaida: DateTime.utc(2023, DateTime.march, 24));
-    expect(agendamentoFerias.aprovarSolicitacao(gerente, funcionario), true);
+    expect(agendamentoFerias.aprovarSolicitacao(gerente), true); 
+  });
+
+  test("As suas solicitações de férias devem ser aprovadas pelos seus gerentes de departamento (Menos de 15 dias)", (){
+    var funcionarioSolicitouMenosQuinzeDias = Funcionario(
+        dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
+        departamento: Departamento(nome: "RH"));
+    var gerenteSolicitouMenosQuinzeDias = Gerente(
+        dataDeEntrada: DateTime.utc(2005, DateTime.april, 15),
+        departamento: Departamento(nome: "RH"),
+        dataUltimaBonificacao: DateTime.utc(2005, DateTime.april, 15));
+    var agendamentoFeriasSolicitouMenosQuinzeDias = AgendamentoFerias(
+        funcionario: funcionarioSolicitouMenosQuinzeDias,
+        dataSolicitacao: DateTime.utc(2023, DateTime.march, 10),
+        dataSaida: DateTime.utc(2023, DateTime.march, 24));
+    expect(
+        agendamentoFeriasSolicitouMenosQuinzeDias
+            .aprovarSolicitacao(gerenteSolicitouMenosQuinzeDias),
+        false);
+  });
+
+  test("As suas solicitações de férias devem ser aprovadas pelos seus gerentes de departamento (departamento diferente)", () {
+     var funcionarioSolicitouGerenteErrado = Funcionario(
+        dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
+        departamento: Departamento(nome: "RH"));
+    var gerenteSolicitouGerenteErrado = Gerente(
+        dataDeEntrada: DateTime.utc(2005, DateTime.april, 15),
+        departamento: Departamento(nome: "Desenvolvimento"),
+        dataUltimaBonificacao: DateTime.utc(2005, DateTime.april, 15));
+    var agendamentoFeriasSolicitouGerenteErrado = AgendamentoFerias(
+        funcionario: funcionarioSolicitouGerenteErrado,
+        dataSolicitacao: DateTime.utc(2023, DateTime.march, 10),
+        dataSaida: DateTime.utc(2023, DateTime.march, 24));
+    expect(agendamentoFeriasSolicitouGerenteErrado.aprovarSolicitacao(gerenteSolicitouGerenteErrado), false);
   });
 
   test(
@@ -82,8 +133,22 @@ void main() {
         funcionario: funcionario,
         dataSolicitacao: DateTime.utc(2023, DateTime.march, 9),
         dataSaida: DateTime.utc(2023, DateTime.march, 24));
-    expect(agendamentoFerias.agendarFerias(gerente, funcionario),
+    expect(agendamentoFerias.agendarFerias(gerente),
         DateTime.utc(2023, DateTime.march, 24));
+
+    var funcionarioErrado = Funcionario(
+        dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
+        departamento: Departamento(nome: "RH"));
+    var gerenteErrado = Gerente(
+        dataDeEntrada: DateTime.utc(2005, DateTime.april, 15),
+        departamento: Departamento(nome: "Desenvolvimento"),
+        dataUltimaBonificacao: DateTime.utc(2005, DateTime.april, 15));
+    var agendamentoFeriasErrado = AgendamentoFerias(
+        funcionario: funcionarioErrado,
+        dataSolicitacao: DateTime.utc(2023, DateTime.march, 9),
+        dataSaida: DateTime.utc(2023, DateTime.march, 24));
+    expect(() => agendamentoFeriasErrado.agendarFerias(gerenteErrado), throwsException);
+    
   });
 
   test(
@@ -128,8 +193,8 @@ void main() {
   test("Terceirizados devem receber pelo serviço/produto", () {
     ProdutoTerceirizado produto = ProdutoTerceirizado(
         nome: "SIS",
-        dataInicio: DateTime.utc(2021, DateTime.april, 15),
-        dataFinal: DateTime.utc(2022, DateTime.april, 15),
+        dataInicioProduto: DateTime.utc(2021, DateTime.april, 15),
+        dataFinalProduto: DateTime.utc(2022, DateTime.april, 15),
         finalizado: true,
         valorAcordado: 1200.0);
 
@@ -138,15 +203,28 @@ void main() {
         departamento: Departamento(nome: "Desenvolvimento"),
         nome: "Larrosa Informática",
         produto: produto);
-    expect(terceiro.receber(DateTime.utc(2022, DateTime.april, 15)),
-        terceiro.produto.valorAcordado);
+    expect(terceiro.receber(DateTime.utc(2022, DateTime.april, 15)), terceiro.produto.valorAcordado);
+
+     ProdutoTerceirizado produtoNaoEntregue = ProdutoTerceirizado(
+        nome: "SIS",
+        dataInicioProduto: DateTime.utc(2021, DateTime.april, 15),
+        dataFinalProduto: DateTime.utc(2022, DateTime.april, 15),
+        finalizado: false,
+        valorAcordado: 1200.0);
+
+    Terceirizado terceiroNaoEntregou = Terceirizado(
+        dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
+        departamento: Departamento(nome: "Desenvolvimento"),
+        nome: "Larrosa Informática",
+        produto: produtoNaoEntregue);
+    expect(() => terceiroNaoEntregou.receber(DateTime.utc(2022, DateTime.april, 15)), throwsException);    
   });
 
   test("Terceirizado não podem solicitar férias", () {
     ProdutoTerceirizado produto = ProdutoTerceirizado(
         nome: "SIS",
-        dataInicio: DateTime.utc(2021, DateTime.april, 15),
-        dataFinal: DateTime.utc(2022, DateTime.april, 15),
+        dataInicioProduto: DateTime.utc(2021, DateTime.april, 15),
+        dataFinalProduto: DateTime.utc(2022, DateTime.april, 15),
         finalizado: true,
         valorAcordado: 1200.0);
 
@@ -159,12 +237,19 @@ void main() {
   });
 
   test("Gerentes devem receber uma bonificação a cada 6 meses", () {
-    var gerente = Gerente(
+    var gerenteComDireitoABonificacao = Gerente(
         dataDeEntrada: DateTime.utc(2005, DateTime.april, 15),
         departamento: Departamento(nome: "RH"),
         dataUltimaBonificacao: DateTime.utc(2022, DateTime.october, 02));
     DateTime dataSolicitacao = DateTime.utc(2023, DateTime.april, 03);
-    expect(gerente.temDireitoBonificacao(dataSolicitacao), true);
+    expect(gerenteComDireitoABonificacao.temDireitoBonificacao(dataSolicitacao), true);
+
+      var gerenteSemDireitoABonificacao = Gerente(
+      departamento: Departamento(nome: "RH"),
+      dataDeEntrada: DateTime.utc(2005, DateTime.april, 15),
+      dataUltimaBonificacao: DateTime.utc(2023, DateTime.february, 02));
+    DateTime dataSolicitacaoErrada = DateTime.utc(2023, DateTime.april, 03);
+    expect(gerenteSemDireitoABonificacao.temDireitoBonificacao(dataSolicitacaoErrada), false);
   });
 }
 

@@ -3,12 +3,14 @@ import 'package:artemis/entidade/departamento.dart';
 import 'package:artemis/entidade/funcionario.dart';
 import 'package:artemis/entidade/posicao_trabalho.dart';
 
-// Liskov, Aberto/Fechado, responsabilidade única
-class Gerente extends Funcionario {
+// Liskov, responsabilidade única
+class Gerente {
   final DateTime dataUltimaBonificacao;
+  final DateTime dataDeEntrada;
+  final Departamento departamento;
   Gerente(
-      {required super.dataDeEntrada,
-      required super.departamento,
+      {required this.dataDeEntrada,
+      required this.departamento,
       required this.dataUltimaBonificacao});
 
   PosicaoTrabalho criarNovaPosicao(PosicaoTrabalho novaPosicao) {

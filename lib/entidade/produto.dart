@@ -1,14 +1,14 @@
 class ProdutoTerceirizado {
   final String nome;
-  final DateTime dataInicio;
-  final DateTime dataFinal;
+  final DateTime dataInicioProduto;
+  final DateTime dataFinalProduto;
   final bool finalizado;
   final double valorAcordado;
   
   ProdutoTerceirizado(
       {required this.nome,
-      required this.dataInicio,
-      required this.dataFinal,
+      required this.dataInicioProduto,
+      required this.dataFinalProduto,
       required this.finalizado,
       required this.valorAcordado});
 }
