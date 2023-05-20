@@ -12,7 +12,17 @@ import 'package:artemis/entidade/registro_ponto.dart';
 import 'package:artemis/entidade/terceirizado.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-// Regras:
+
+// Escopo:
+/**  Sistema de RH
+ * Controlará quando os funcionários da empresa podem pedir solicitar suas férias, sendo aprovadas pelo gerente do seu setor, 
+ * controlará os bônus que os gerentes podem receber no salário, quando poderá ser solicitada tal bonificação, 
+ * controlará também as horas que o funcionário terá de hora-extra, 
+ * terá controle de quantos setores terão na empresa e quais serão os seus gerentes.
+*/
+
+
+// Domínio:
 // >>Só funcionários com 1 ano ou mais de empresa podem fazer solicitação de férias
 // >>Os funcionários devem solicitar férias com uma antecedência mínima de 15 dias
 // >>As suas solicitações de férias devem ser aprovadas pelos seus gerentes de departamento
@@ -24,11 +34,13 @@ import 'package:flutter_test/flutter_test.dart';
 // >>Terceirizado não podem solicitar férias
 // >>Gerentes devem receber uma bonificação a cada 6 meses
 
+
 void main() {
   test(
       "Só funcionários com 1 ano ou mais de empresa podem fazer solicitação de férias",
       () {
     var funcionarioPodeSolicitar = Funcionario(
+        nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
     var agendamentoFeriasPodeSolicitar = AgendamentoFerias(
@@ -38,6 +50,7 @@ void main() {
     expect(agendamentoFeriasPodeSolicitar.funcionarioPodeSolicitarFerias(), true);
 
     var funcionarioNaoPodeSolicitar = Funcionario(
+        nome: "André",
         dataDeEntrada: DateTime.utc(2022, DateTime.october, 17),
         departamento: Departamento(nome: "RH"));    
     var agendamentoFeriasNaoPodeSolicitar = AgendamentoFerias(
@@ -51,6 +64,7 @@ void main() {
       "Os funcionários devem solicitar férias com uma antecedência mínima de 15 dias",
       () {
     var funcionarioSolicitouCerto = Funcionario(
+        nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
     var agendamentoFeriasSolicitouCerto = AgendamentoFerias(
@@ -60,6 +74,7 @@ void main() {
     expect(agendamentoFeriasSolicitouCerto.solicitouComQuinzeDias(), true);
     
      var funcionarioNaoSolicitouCerto = Funcionario(
+        nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
     var agendamentoFeriasNaoSolicitouCerto = AgendamentoFerias(
@@ -73,6 +88,7 @@ void main() {
       "As suas solicitações de férias devem ser aprovadas pelos seus gerentes de departamento (Certo)",
       () {
     var funcionario = Funcionario(
+        nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
     var gerente = Gerente(
@@ -88,6 +104,7 @@ void main() {
 
   test("As suas solicitações de férias devem ser aprovadas pelos seus gerentes de departamento (Menos de 15 dias)", (){
     var funcionarioSolicitouMenosQuinzeDias = Funcionario(
+        nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
     var gerenteSolicitouMenosQuinzeDias = Gerente(
@@ -106,6 +123,7 @@ void main() {
 
   test("As suas solicitações de férias devem ser aprovadas pelos seus gerentes de departamento (departamento diferente)", () {
      var funcionarioSolicitouGerenteErrado = Funcionario(
+        nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
     var gerenteSolicitouGerenteErrado = Gerente(
@@ -123,6 +141,7 @@ void main() {
       "As férias só devem ser agendadas após aprovação do gerente de departamento",
       () {
     var funcionario = Funcionario(
+        nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
     var gerente = Gerente(
@@ -137,6 +156,7 @@ void main() {
         DateTime.utc(2023, DateTime.march, 24));
 
     var funcionarioErrado = Funcionario(
+        nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
     var gerenteErrado = Gerente(
@@ -159,6 +179,7 @@ void main() {
         departamento: Departamento(nome: "RH"),
         dataUltimaBonificacao: DateTime.utc(2005, DateTime.april, 15));
     var funcionario = Funcionario(
+        nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
     List<Funcionario> funcionarios = [];
@@ -173,6 +194,7 @@ void main() {
   test("Os funcionários não podem exceder o limite de horas extras", () {
     IRegistroPonto rp = HorasExtrasCertas();
     var funcionario = Funcionario(
+        nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
 

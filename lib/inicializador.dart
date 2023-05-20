@@ -9,10 +9,10 @@ class Inicializador extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Meu Aplicativo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.green,
+      primarySwatch: Colors.blue,
       ),
-      // home: ,
     );
 
   }
