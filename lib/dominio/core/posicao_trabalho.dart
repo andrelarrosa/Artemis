@@ -1,5 +1,5 @@
-import 'package:artemis/entidade/departamento.dart';
-import 'package:artemis/entidade/funcionario.dart';
+import 'package:artemis/dominio/core/departamento.dart';
+import 'package:artemis/dominio/core/funcionario.dart';
 
 // Responsabilidade Única
 class PosicaoTrabalho {

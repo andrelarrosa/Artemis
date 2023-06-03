@@ -1,16 +1,15 @@
-import 'package:artemis/entidade/funcionario.dart';
-import 'package:artemis/entidade/produto.dart';
+import 'package:artemis/dominio/core/funcionario.dart';
+import 'package:artemis/dominio/core/produto.dart';
 
 // herança
 class Terceirizado extends Funcionario {
   //abstração
-  final String nome;
   final ProdutoTerceirizado produto;
 
   Terceirizado(
       {required super.dataDeEntrada,
       required super.departamento,
-      required this.nome,
+      required super.nome,
       required this.produto});
 
   // Encapsulamento da lógica para determinar se um terceiro pode receber

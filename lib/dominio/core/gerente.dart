@@ -1,7 +1,6 @@
-import 'package:artemis/entidade/agendamentoFerias.dart';
-import 'package:artemis/entidade/departamento.dart';
-import 'package:artemis/entidade/funcionario.dart';
-import 'package:artemis/entidade/posicao_trabalho.dart';
+import 'package:artemis/dominio/core/agendamentoFerias.dart';
+import 'package:artemis/dominio/core/departamento.dart';
+import 'package:artemis/dominio/core/posicao_trabalho.dart';
 
 // Liskov, responsabilidade única
 class Gerente {

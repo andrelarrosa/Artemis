@@ -1,15 +1,15 @@
 import 'dart:math';
 
-import 'package:artemis/entidade/agendamentoFerias.dart';
-import 'package:artemis/entidade/departamento.dart';
-import 'package:artemis/entidade/estagiario.dart';
-import 'package:artemis/entidade/funcionario.dart';
-import 'package:artemis/entidade/gerente.dart';
-import 'package:artemis/entidade/interfaces/iregistro_ponto.dart';
-import 'package:artemis/entidade/posicao_trabalho.dart';
-import 'package:artemis/entidade/produto.dart';
-import 'package:artemis/entidade/registro_ponto.dart';
-import 'package:artemis/entidade/terceirizado.dart';
+import 'package:artemis/dominio/core/agendamentoFerias.dart';
+import 'package:artemis/dominio/core/departamento.dart';
+import 'package:artemis/dominio/core/estagiario.dart';
+import 'package:artemis/dominio/core/funcionario.dart';
+import 'package:artemis/dominio/core/gerente.dart';
+import 'package:artemis/dominio/core/posicao_trabalho.dart';
+import 'package:artemis/dominio/core/produto.dart';
+import 'package:artemis/dominio/core/registro_ponto.dart';
+import 'package:artemis/dominio/core/terceirizado.dart';
+import 'package:artemis/dominio/portas/secundaria/iregistro_ponto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -20,7 +20,6 @@ import 'package:flutter_test/flutter_test.dart';
  * controlará também as horas que o funcionário terá de hora-extra, 
  * terá controle de quantos setores terão na empresa e quais serão os seus gerentes.
 */
-
 
 // Domínio:
 // >>Só funcionários com 1 ano ou mais de empresa podem fazer solicitação de férias
@@ -34,7 +33,6 @@ import 'package:flutter_test/flutter_test.dart';
 // >>Terceirizado não podem solicitar férias
 // >>Gerentes devem receber uma bonificação a cada 6 meses
 
-
 void main() {
   test(
       "Só funcionários com 1 ano ou mais de empresa podem fazer solicitação de férias",
@@ -47,17 +45,19 @@ void main() {
         funcionario: funcionarioPodeSolicitar,
         dataSolicitacao: DateTime.utc(2023, DateTime.march, 9),
         dataSaida: DateTime.utc(2023, DateTime.march, 24));
-    expect(agendamentoFeriasPodeSolicitar.funcionarioPodeSolicitarFerias(), true);
+    expect(
+        agendamentoFeriasPodeSolicitar.funcionarioPodeSolicitarFerias(), true);
 
     var funcionarioNaoPodeSolicitar = Funcionario(
         nome: "André",
         dataDeEntrada: DateTime.utc(2022, DateTime.october, 17),
-        departamento: Departamento(nome: "RH"));    
+        departamento: Departamento(nome: "RH"));
     var agendamentoFeriasNaoPodeSolicitar = AgendamentoFerias(
         funcionario: funcionarioNaoPodeSolicitar,
         dataSolicitacao: DateTime.utc(2023, DateTime.march, 9),
         dataSaida: DateTime.utc(2023, DateTime.march, 24));
-    expect(agendamentoFeriasNaoPodeSolicitar.funcionarioPodeSolicitarFerias(), false);
+    expect(agendamentoFeriasNaoPodeSolicitar.funcionarioPodeSolicitarFerias(),
+        false);
   });
 
   test(
@@ -72,8 +72,8 @@ void main() {
         dataSolicitacao: DateTime.utc(2023, DateTime.march, 9),
         dataSaida: DateTime.utc(2023, DateTime.march, 24));
     expect(agendamentoFeriasSolicitouCerto.solicitouComQuinzeDias(), true);
-    
-     var funcionarioNaoSolicitouCerto = Funcionario(
+
+    var funcionarioNaoSolicitouCerto = Funcionario(
         nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
@@ -99,10 +99,12 @@ void main() {
         funcionario: funcionario,
         dataSolicitacao: DateTime.utc(2023, DateTime.march, 9),
         dataSaida: DateTime.utc(2023, DateTime.march, 24));
-    expect(agendamentoFerias.aprovarSolicitacao(gerente), true); 
+    expect(agendamentoFerias.aprovarSolicitacao(gerente), true);
   });
 
-  test("As suas solicitações de férias devem ser aprovadas pelos seus gerentes de departamento (Menos de 15 dias)", (){
+  test(
+      "As suas solicitações de férias devem ser aprovadas pelos seus gerentes de departamento (Menos de 15 dias)",
+      () {
     var funcionarioSolicitouMenosQuinzeDias = Funcionario(
         nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
@@ -121,8 +123,10 @@ void main() {
         false);
   });
 
-  test("As suas solicitações de férias devem ser aprovadas pelos seus gerentes de departamento (departamento diferente)", () {
-     var funcionarioSolicitouGerenteErrado = Funcionario(
+  test(
+      "As suas solicitações de férias devem ser aprovadas pelos seus gerentes de departamento (departamento diferente)",
+      () {
+    var funcionarioSolicitouGerenteErrado = Funcionario(
         nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         departamento: Departamento(nome: "RH"));
@@ -134,7 +138,10 @@ void main() {
         funcionario: funcionarioSolicitouGerenteErrado,
         dataSolicitacao: DateTime.utc(2023, DateTime.march, 10),
         dataSaida: DateTime.utc(2023, DateTime.march, 24));
-    expect(agendamentoFeriasSolicitouGerenteErrado.aprovarSolicitacao(gerenteSolicitouGerenteErrado), false);
+    expect(
+        agendamentoFeriasSolicitouGerenteErrado
+            .aprovarSolicitacao(gerenteSolicitouGerenteErrado),
+        false);
   });
 
   test(
@@ -167,8 +174,8 @@ void main() {
         funcionario: funcionarioErrado,
         dataSolicitacao: DateTime.utc(2023, DateTime.march, 9),
         dataSaida: DateTime.utc(2023, DateTime.march, 24));
-    expect(() => agendamentoFeriasErrado.agendarFerias(gerenteErrado), throwsException);
-    
+    expect(() => agendamentoFeriasErrado.agendarFerias(gerenteErrado),
+        throwsException);
   });
 
   test(
@@ -225,9 +232,10 @@ void main() {
         departamento: Departamento(nome: "Desenvolvimento"),
         nome: "Larrosa Informática",
         produto: produto);
-    expect(terceiro.receber(DateTime.utc(2022, DateTime.april, 15)), terceiro.produto.valorAcordado);
+    expect(terceiro.receber(DateTime.utc(2022, DateTime.april, 15)),
+        terceiro.produto.valorAcordado);
 
-     ProdutoTerceirizado produtoNaoEntregue = ProdutoTerceirizado(
+    ProdutoTerceirizado produtoNaoEntregue = ProdutoTerceirizado(
         nome: "SIS",
         dataInicioProduto: DateTime.utc(2021, DateTime.april, 15),
         dataFinalProduto: DateTime.utc(2022, DateTime.april, 15),
@@ -239,7 +247,10 @@ void main() {
         departamento: Departamento(nome: "Desenvolvimento"),
         nome: "Larrosa Informática",
         produto: produtoNaoEntregue);
-    expect(() => terceiroNaoEntregou.receber(DateTime.utc(2022, DateTime.april, 15)), throwsException);    
+    expect(
+        () =>
+            terceiroNaoEntregou.receber(DateTime.utc(2022, DateTime.april, 15)),
+        throwsException);
   });
 
   test("Terceirizado não podem solicitar férias", () {
@@ -264,14 +275,18 @@ void main() {
         departamento: Departamento(nome: "RH"),
         dataUltimaBonificacao: DateTime.utc(2022, DateTime.october, 02));
     DateTime dataSolicitacao = DateTime.utc(2023, DateTime.april, 03);
-    expect(gerenteComDireitoABonificacao.temDireitoBonificacao(dataSolicitacao), true);
+    expect(gerenteComDireitoABonificacao.temDireitoBonificacao(dataSolicitacao),
+        true);
 
-      var gerenteSemDireitoABonificacao = Gerente(
-      departamento: Departamento(nome: "RH"),
-      dataDeEntrada: DateTime.utc(2005, DateTime.april, 15),
-      dataUltimaBonificacao: DateTime.utc(2023, DateTime.february, 02));
+    var gerenteSemDireitoABonificacao = Gerente(
+        departamento: Departamento(nome: "RH"),
+        dataDeEntrada: DateTime.utc(2005, DateTime.april, 15),
+        dataUltimaBonificacao: DateTime.utc(2023, DateTime.february, 02));
     DateTime dataSolicitacaoErrada = DateTime.utc(2023, DateTime.april, 03);
-    expect(gerenteSemDireitoABonificacao.temDireitoBonificacao(dataSolicitacaoErrada), false);
+    expect(
+        gerenteSemDireitoABonificacao
+            .temDireitoBonificacao(dataSolicitacaoErrada),
+        false);
   });
 }
 
@@ -283,5 +298,4 @@ class HorasExtrasCertas implements IRegistroPonto {
   double buscarHorasExtrasEstagiario(Estagiario? estagiario) {
     return 7.0;
   }
-
 }

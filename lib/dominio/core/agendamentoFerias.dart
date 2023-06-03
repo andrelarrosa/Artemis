@@ -1,5 +1,5 @@
-import 'package:artemis/entidade/funcionario.dart';
-import 'package:artemis/entidade/gerente.dart';
+import 'package:artemis/dominio/core/funcionario.dart';
+import 'package:artemis/dominio/core/gerente.dart';
 
 // SRP (Single Responsibility Principle)
 class AgendamentoFerias {
@@ -27,9 +27,10 @@ class AgendamentoFerias {
     }
     return false;
   }
-   
-   bool funcionarioPodeSolicitarFerias() {
-    var diferencaDias = DateTime.now().difference(this.funcionario.dataDeEntrada);
+
+  bool funcionarioPodeSolicitarFerias() {
+    var diferencaDias =
+        DateTime.now().difference(this.funcionario.dataDeEntrada);
     if (diferencaDias.inDays >= 365) {
       return true;
     }
