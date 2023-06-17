@@ -5,4 +5,5 @@ abstract class IAgendamentoFerias {
   bool aprovarSolicitacao(SolicitacaoFeriasDTO solicitacaoFerias);
   bool funcionarioPodeSolicitarFerias(DateTime dataEntradaFuncionario);
   DateTime agendarFerias(SolicitacaoFeriasDTO solicitacaoFerias);
+  Future<bool> EnviarEmail(SolicitacaoFeriasDTO solicitacaoFerias);
 }

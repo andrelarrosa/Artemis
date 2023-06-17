@@ -46,4 +46,9 @@ class AgendamentoFerias implements IAgendamentoFerias{
     }
     return this.dataSaida;
   }
+
+  Future<bool> EnviarEmail(SolicitacaoFeriasDTO solicitacaoFerias) async {
+
+    return true;
+  }
 }
