@@ -10,6 +10,7 @@ class Terceirizado extends Funcionario {
       {required super.dataDeEntrada,
       required super.departamento,
       required super.nome,
+      required super.email,
       required this.produto});
 
   // Encapsulamento da lógica para determinar se um terceiro pode receber

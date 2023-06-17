@@ -1,4 +1,3 @@
-import 'package:artemis/view/funcionario.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,9 +13,6 @@ class Inicializador extends StatelessWidget {
       theme: ThemeData(
       primarySwatch: Colors.blue,
       ),
-      routes: {
-        '/': (context) => FuncionarioForm(),
-      },
     );
 
   }
