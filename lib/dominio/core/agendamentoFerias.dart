@@ -1,5 +1,7 @@
 import 'package:artemis/dominio/core/funcionario.dart';
 import 'package:artemis/dominio/core/gerente.dart';
+import 'package:artemis/dominio/dto/agendamentoEntrada_dto.dart';
+import 'package:artemis/dominio/dto/agendamentoSaida_dto.dart';
 import 'package:artemis/dominio/dto/solicitacao_ferias_dto.dart';
 import 'package:artemis/dominio/portas/primaria/iagendamentoFerias.dart';
 
@@ -9,17 +11,12 @@ import '../portas/secundaria/ienviar_email.dart';
 
 // SRP (Single Responsibility Principle)
 class AgendamentoFerias {
-  final Funcionario funcionario;
-  final DateTime dataSolicitacao;
-  final DateTime dataSaida;
+  final AgendamentoFeriasEntradaDTO agendamento;
 
-  AgendamentoFerias(
-      {required this.funcionario,
-      required this.dataSolicitacao,
-      required this.dataSaida});
+  AgendamentoFerias({required this.agendamento});
 
   bool solicitouComQuinzeDias(SolicitacaoFeriasDTO solicitacaoFerias) {
-    var diferencaDias = dataSaida.difference(dataSolicitacao);
+    var diferencaDias = this.agendamento.dataSaida.difference(this.agendamento.dataSolicitacao);
     if (funcionarioPodeSolicitarFerias(
             solicitacaoFerias.funcionario.dataDeEntrada) &&
         diferencaDias.inDays >= 15) {
@@ -30,7 +27,7 @@ class AgendamentoFerias {
 
   bool aprovarSolicitacao(SolicitacaoFeriasDTO solicitacaoFerias) {
     if (solicitacaoFerias.gerente.departamento.nome ==
-            this.funcionario.departamento.nome &&
+            this.agendamento.funcionario.departamento.nome &&
         solicitouComQuinzeDias(solicitacaoFerias)) {
       return true;
     }
@@ -50,20 +47,13 @@ class AgendamentoFerias {
       throw Exception(
           "Não foi possível agendar suas férias, por favor, verifique com o seu gerente");
     }
-    return this.dataSaida;
+    return this.agendamento.dataSaida;
   }
 
-  Future<bool> EnviarEmail(SolicitacaoFeriasDTO solicitacaoFerias, 
-  EmailSolicitacaoFeriasDTO emailSolicitacao, 
-  {required IDAOAgendamentoFerias dao, required IEnviarEmail email}) async {
+  Future<bool> EnviarEmail(SolicitacaoFeriasDTO solicitacaoFerias, AgendamentoSaidaDTO agendamentoSaidaDTO, {required IDAOAgendamentoFerias dao, required IEnviarEmail email}) async {
     bool envio, salvar;
-    envio = await email.enviarEmail(email: emailSolicitacao, solicitacaoFerias: solicitacaoFerias);
-    salvar = await dao.salvar(
-            solicitacaoFerias: SolicitacaoFeriasDTO(
-            funcionario: solicitacaoFerias.funcionario,
-            dataSolicitacao: solicitacaoFerias.dataSolicitacao,
-            dataSaida: solicitacaoFerias.dataSaida,
-            gerente: solicitacaoFerias.gerente));
+    envio = await email.enviarEmail(agendamentoSaidaDTO: agendamentoSaidaDTO, solicitacaoFerias: solicitacaoFerias);
+    salvar = await dao.salvar(agendamentoSaidaDTO: agendamentoSaidaDTO);
     return (envio && salvar);
   }
 }

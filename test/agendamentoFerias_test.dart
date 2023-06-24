@@ -9,6 +9,7 @@ import 'package:artemis/dominio/core/posicao_trabalho.dart';
 import 'package:artemis/dominio/core/produto.dart';
 import 'package:artemis/dominio/core/registro_ponto.dart';
 import 'package:artemis/dominio/core/terceirizado.dart';
+import 'package:artemis/dominio/dto/agendamentoEntrada_dto.dart';
 import 'package:artemis/dominio/dto/solicitacao_ferias_dto.dart';
 import 'package:artemis/dominio/portas/secundaria/iregistro_ponto.dart';
 import 'package:flutter/material.dart';
@@ -49,10 +50,11 @@ void main() {
         departamento: Departamento(nome: "RH"),
         dataUltimaBonificacao: DateTime.utc(2005, DateTime.april, 15)));
 
-    var agendamentoFeriasNaoSolicitouCerto = AgendamentoFerias(
-        funcionario: naoSolicitouCerto.funcionario,
+    var agendamento = AgendamentoFeriasEntradaDTO(funcionario: naoSolicitouCerto.funcionario,
         dataSolicitacao: DateTime.utc(2023, DateTime.march, 15),
         dataSaida: DateTime.utc(2023, DateTime.march, 24));
+
+    var agendamentoFeriasNaoSolicitouCerto = AgendamentoFerias(agendamento: agendamento);
 
     expect(agendamentoFeriasNaoSolicitouCerto.solicitouComQuinzeDias(naoSolicitouCerto), false);
   });
