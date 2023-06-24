@@ -10,8 +10,11 @@ import 'package:artemis/dominio/core/produto.dart';
 import 'package:artemis/dominio/core/registro_ponto.dart';
 import 'package:artemis/dominio/core/terceirizado.dart';
 import 'package:artemis/dominio/dto/agendamentoEntrada_dto.dart';
+import 'package:artemis/dominio/dto/agendamentoSaida_dto.dart';
 import 'package:artemis/dominio/dto/solicitacao_ferias_dto.dart';
 import 'package:artemis/dominio/portas/secundaria/iregistro_ponto.dart';
+import 'package:artemis/infra/dao/dao_agendamento.dart';
+import 'package:artemis/infra/enviar_email.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -36,26 +39,62 @@ import 'package:flutter_test/flutter_test.dart';
 // >>Gerentes devem receber uma bonificação a cada 6 meses
 
 void main() {
-  test("Solicitação de Férias Incorreta", () {
+  test("Solicitação de Férias", () {
 
-    var naoSolicitouCerto = SolicitacaoFeriasDTO(
+    var solicitouCerto = SolicitacaoFeriasDTO(
         funcionario: Funcionario(nome: "André",
         dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
         email: 'andre.larrosa@outlook.com',
         departamento: Departamento(nome: "RH")),
         dataSolicitacao: DateTime.utc(2023, DateTime.march, 15),
-        dataSaida: DateTime.utc(2023, DateTime.march, 24),
+        dataSaida: DateTime.utc(2023, DateTime.march, 31),
         gerente: Gerente(
         dataDeEntrada: DateTime.utc(2005, DateTime.april, 15),
         departamento: Departamento(nome: "RH"),
         dataUltimaBonificacao: DateTime.utc(2005, DateTime.april, 15)));
 
-    var agendamento = AgendamentoFeriasEntradaDTO(funcionario: naoSolicitouCerto.funcionario,
-        dataSolicitacao: DateTime.utc(2023, DateTime.march, 15),
-        dataSaida: DateTime.utc(2023, DateTime.march, 24));
+    var agendamento = AgendamentoFeriasEntradaDTO(funcionario: solicitouCerto.funcionario,
+        dataSolicitacao: solicitouCerto.dataSolicitacao,
+        dataSaida: solicitouCerto.dataSaida);
 
     var agendamentoFeriasNaoSolicitouCerto = AgendamentoFerias(agendamento: agendamento);
 
-    expect(agendamentoFeriasNaoSolicitouCerto.solicitouComQuinzeDias(naoSolicitouCerto), false);
+    expect(agendamentoFeriasNaoSolicitouCerto.solicitouComQuinzeDias(solicitouCerto), true);
+  });
+
+  test("Enviar E-mail" ,(){
+
+    var solicitouCerto = SolicitacaoFeriasDTO(
+        funcionario: Funcionario(
+            nome: "André",
+            dataDeEntrada: DateTime.utc(2021, DateTime.april, 15),
+            email: 'andre.larrosa@outlook.com',
+            departamento: Departamento(nome: "RH")),
+            dataSolicitacao: DateTime.utc(2023, DateTime.march, 15),
+            dataSaida: DateTime.utc(2023, DateTime.march, 31),
+        gerente: Gerente(
+            dataDeEntrada: DateTime.utc(2005, DateTime.april, 15),
+            departamento: Departamento(nome: "RH"),
+            dataUltimaBonificacao: DateTime.utc(2005, DateTime.april, 15)));
+
+    var agendamento = AgendamentoFeriasEntradaDTO(
+      funcionario: solicitouCerto.funcionario,
+      dataSolicitacao: solicitouCerto.dataSolicitacao,
+      dataSaida: solicitouCerto.dataSaida);
+    
+    var agendamentoFeriasNaoSolicitouCerto = AgendamentoFerias(agendamento: agendamento);
+
+    var agendamentoSaida = AgendamentoSaidaDTO(
+      descricao: "ablublublé", 
+      funcionario: solicitouCerto.funcionario, 
+      dataSolicitacao: solicitouCerto.dataSolicitacao, 
+      dataSaida: solicitouCerto.dataSaida, 
+      aprovado: true);
+    
+    var enviarEmail = EnviarEmail();
+    var dao  = DAOAgendamento();
+
+    expect(agendamentoFeriasNaoSolicitouCerto.EnviarEmail(solicitouCerto, agendamentoSaida,dao: dao,email: enviarEmail ),Future.value(false));
+
   });
 }
