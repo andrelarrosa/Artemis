@@ -53,7 +53,7 @@ class AgendamentoFerias {
   Future<bool> EnviarEmail(SolicitacaoFeriasDTO solicitacaoFerias, AgendamentoSaidaDTO agendamentoSaidaDTO, {required IDAOAgendamentoFerias dao, required IEnviarEmail email}) async {
     bool envio, salvar;
     envio = await email.enviarEmail(agendamentoSaidaDTO: agendamentoSaidaDTO, solicitacaoFerias: solicitacaoFerias);
-    salvar = await dao.salvar(agendamentoSaidaDTO: agendamentoSaidaDTO);
-    return (envio && salvar);
+    // salvar = await dao.salvar(agendamentoSaidaDTO: agendamentoSaidaDTO);
+    return (envio);
   }
 }

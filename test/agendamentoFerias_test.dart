@@ -15,6 +15,7 @@ import 'package:artemis/dominio/dto/solicitacao_ferias_dto.dart';
 import 'package:artemis/dominio/portas/secundaria/iregistro_ponto.dart';
 import 'package:artemis/infra/dao/dao_agendamento.dart';
 import 'package:artemis/infra/enviar_email.dart';
+import 'package:artemis/infra/enviar_email_fake.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -91,10 +92,11 @@ void main() {
       dataSaida: solicitouCerto.dataSaida, 
       aprovado: true);
     
-    var enviarEmail = EnviarEmail();
+    var enviarEmail = EnviarEmailFake();
     var dao  = DAOAgendamento();
 
-    expect(agendamentoFeriasNaoSolicitouCerto.EnviarEmail(solicitouCerto, agendamentoSaida,dao: dao,email: enviarEmail ),Future.value(false));
+    expect(agendamentoFeriasNaoSolicitouCerto.EnviarEmail(solicitouCerto, agendamentoSaida,dao: dao,email: enviarEmail ),
+        completion(equals(true)));
 
   });
 }
